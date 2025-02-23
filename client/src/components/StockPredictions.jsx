@@ -1,12 +1,13 @@
 import { useState, useEffect } from 'react';
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend } from 'recharts';
-import { TrendingUp, TrendingDown, AlertCircle } from 'lucide-react';
+import { TrendingUp, TrendingDown, AlertCircle, Eye, EyeOff } from 'lucide-react';
 
 export default function StockPredictions() {
   const [ticker, setTicker] = useState('');
   const [stockData, setStockData] = useState(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
+  const [activeTab, setActiveTab] = useState('overview');
 
   const fetchStockData = async (symbol) => {
     try {
@@ -30,10 +31,20 @@ export default function StockPredictions() {
     if (ticker.trim()) fetchStockData(ticker.trim());
   };
 
+  const IndicatorCard = ({ title, data, className = "" }) => (
+    <div className={`p-4 border rounded ${className}`}>
+      <h3 className="text-lg font-semibold mb-2">{title}</h3>
+      <div className={`text-xl ${data.decision.includes('Buy') ? 'text-green-600' : 'text-red-600'}`}>
+        {data.decision}
+      </div>
+      
+    </div>
+  );
+
   return (
     <div className="p-6 max-w-7xl mx-auto">
       <div className="mb-8">
-        <h1 className="text-3xl font-bold mb-4">Stock Analysis Dashboard</h1>
+        <h1 className="text-3xl font-bold mb-4">Advanced Stock Analysis Dashboard</h1>
         
         <form onSubmit={handleSubmit} className="flex gap-4 mb-6">
           <input
@@ -62,10 +73,10 @@ export default function StockPredictions() {
 
       {stockData && (
         <div className="space-y-8">
-          {/* Quote Summary */}
+          {/* Price Overview */}
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
             <div className="p-4 border rounded">
-              <h3 className="text-lg font-semibold mb-2">Price</h3>
+              <h3 className="text-lg font-semibold mb-2">Current Price</h3>
               <div className="text-2xl">${stockData.quote.regularMarketPrice.toFixed(2)}</div>
               <div className={`flex items-center gap-1 ${stockData.quote.regularMarketChangePercent > 0 ? 'text-green-600' : 'text-red-600'}`}>
                 {stockData.quote.regularMarketChangePercent > 0 ? <TrendingUp size={20} /> : <TrendingDown size={20} />}
@@ -79,10 +90,33 @@ export default function StockPredictions() {
             </div>
 
             <div className="p-4 border rounded">
-              <h3 className="text-lg font-semibold mb-2">MACD Signal</h3>
-              <div className={`text-2xl ${stockData.technicalAnalysis.macd.decision.includes('Buy') ? 'text-green-600' : 'text-red-600'}`}>
-                {stockData.technicalAnalysis.macd.decision}
+              <h3 className="text-lg font-semibold mb-2">Day Range</h3>
+              <div className="text-lg">
+                ${stockData.quote.regularMarketDayLow.toFixed(2)} - ${stockData.quote.regularMarketDayHigh.toFixed(2)}
               </div>
+            </div>
+          </div>
+
+          {/* Technical Indicators */}
+          <div className="border rounded p-4">
+            <h2 className="text-xl font-bold mb-4">Technical Indicators</h2>
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+              <IndicatorCard 
+                title="MACD" 
+                data={stockData.technicalAnalysis.macd} 
+              />
+              <IndicatorCard 
+                title="Alligator" 
+                data={stockData.technicalAnalysis.alligator} 
+              />
+              <IndicatorCard 
+                title="Pivot Points" 
+                data={stockData.technicalAnalysis.pivotPoints} 
+              />
+              <IndicatorCard 
+                title="SuperTrend" 
+                data={stockData.technicalAnalysis.superTrend} 
+              />
             </div>
           </div>
 
@@ -101,7 +135,7 @@ export default function StockPredictions() {
 
           {/* News Feed */}
           <div className="p-4 border rounded">
-            <h3 className="text-lg font-semibold mb-4">Latest News</h3>
+            <h3 className="text-lg font-semibold mb-4">Latest News & Sentiment</h3>
             <div className="space-y-4">
               {stockData.news.map((article, index) => (
                 <div key={index} className="p-4 border rounded">
