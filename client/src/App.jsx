@@ -13,6 +13,7 @@ import Search from "./pages/Search";
 import StockPredictions from "./components/StockPredictions";
 import News from "./pages/News";
 import StockAnalysis from "./pages/StockAnalysis";
+import Game from "./pages/Game";
 
 export default function App() {
   return (
@@ -26,6 +27,7 @@ export default function App() {
         <Route path="/sign-up" element={<SignUp />} />
         <Route path="/search" element={<Search />} />
         <Route path="/stockanalysis" element={<StockAnalysis />} />
+        <Route path="/game" element={<Game />} />
         
         <Route element={<PrivateRoute />}>
           <Route path="/dashboard" element={<Dashboard />} />
