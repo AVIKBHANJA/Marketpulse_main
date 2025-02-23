@@ -1,0 +1,74 @@
+{
+  "intents": [
+    {
+      "intent": "check_stock_price",
+      "examples": [
+        "What is the stock price of {stock_symbol}?",
+        "Show me the current price of {stock_symbol}.",
+        "How much is {stock_symbol} trading at?",
+        "Can you tell me the price of {stock_symbol}?",
+        "What is the current trading price of {stock_symbol}?",
+        "Give me the latest price of {stock_symbol}.",
+        "What is {stock_symbol} worth right now?",
+        "What is the value of {stock_symbol} today?"
+      ],
+      "answer": "The current price of {stock_symbol} is $X."
+    },
+    {
+      "intent": "analyze_stock_trend",
+      "examples": [
+        "Analyze the trend for {stock_symbol} over the last 10 days.",
+        "Give me a trend analysis of {stock_symbol} for the last 10 days.",
+        "Show me the stock performance of {stock_symbol} in the last 10 days.",
+        "What is the trend for {stock_symbol} recently?",
+        "How has {stock_symbol} been performing in the last 10 days?",
+        "Provide a trend analysis for {stock_symbol}.",
+        "What is the 10-day trend for {stock_symbol}?",
+        "Show me the trend for {stock_symbol} over the past 10 days."
+      ],
+      "answer": "The trend analysis for {stock_symbol} over the last 10 days shows an upward/downward trend with a percentage change of X%."
+    },
+    {
+      "intent": "get_stock_news",
+      "examples": [
+        "What’s the latest news on {stock_symbol}?",
+        "Give me recent news articles about {stock_symbol}.",
+        "Show me financial news related to {stock_symbol}.",
+        "Are there any recent updates on {stock_symbol}?",
+        "What are the latest headlines for {stock_symbol}?",
+        "Provide me with news about {stock_symbol}.",
+        "What is the recent news on {stock_symbol}?",
+        "Show me the latest news articles about {stock_symbol}."
+      ],
+      "answer": "The latest news about {stock_symbol} includes headlines such as: 'X'"
+    },
+    {
+      "intent": "get_earnings_report",
+      "examples": [
+        "Show me the earnings report for {stock_symbol}.",
+        "What is the latest earnings report of {stock_symbol}?",
+        "Give me the earnings for {stock_symbol}.",
+        "Earnings report for {stock_symbol}.",
+        "Get earnings data of {stock_symbol}.",
+        "Provide the earnings report for {stock_symbol}.",
+        "What are the earnings for {stock_symbol}?",
+        "Show me the earnings data for {stock_symbol}."
+      ],
+      "answer": "Fetching the latest earnings report for {stock_symbol}..."
+    },
+    {
+      "intent": "get_stock_data",
+      "examples": [
+        "What is the current stock information for {stock_symbol}?",
+        "Give me the stock data for {stock_symbol}.",
+        "Show me the stock details for {stock_symbol}.",
+        "Provide stock information for {stock_symbol}.",
+        "What are the stock details for {stock_symbol}?",
+        "Give me the stock overview for {stock_symbol}.",
+        "Show me the stock info for {stock_symbol}.",
+        "What is the stock data for {stock_symbol}?"
+      ],
+      "answer": "The current stock data for {stock_symbol} is X"
+    }
+  ]
+}
