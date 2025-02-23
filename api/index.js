@@ -71,6 +71,81 @@ app.use(cors({
   origin: 'http://localhost:5173', // Update with your client port
   credentials: true
 }));
+function calculateEMA(data, periods) {
+  const k = 2 / (periods + 1);
+  let ema = [data[0]];
+  for (let i = 1; i < data.length; i++) {
+      ema.push(data[i] * k + ema[i - 1] * (1 - k));
+  }
+  return ema;
+}
+
+function calculateMACD(data) {
+  const closePrices = data.map(d => d.close);
+  if (closePrices.length < 26) return { decision: "❌ Not enough data" };
+
+  const shortEMA = calculateEMA(closePrices, 12);
+  const longEMA = calculateEMA(closePrices, 26);
+  const macd = shortEMA.map((short, i) => short - longEMA[i]);
+  const signal = calculateEMA(macd, 9);
+
+  const decision = macd[macd.length - 1] > signal[signal.length - 1] ? "✅ Buy" : "❌ Sell";
+  return { macd, signal, decision };
+}
+
+// Stock Analysis Routes
+app.get('/api/stock/:ticker', async (req, res) => {
+  try {
+      const { ticker } = req.params;
+      const { days = 90 } = req.query;
+
+      const startDate = new Date();
+      startDate.setDate(startDate.getDate() - days);
+
+      const [quote, historical, newsData] = await Promise.all([
+          yahooFinance.quote(ticker),
+          yahooFinance.historical(ticker, {
+              period1: startDate,
+              period2: new Date(),
+              interval: "1d"
+          }),
+          yahooFinance.search(ticker)
+      ]);
+
+      // Calculate technical indicators
+      const technicalAnalysis = {
+          macd: calculateMACD(historical)
+      };
+
+      // Process news with sentiment
+      const newsWithSentiment = newsData.news.map(article => ({
+          title: article.title,
+          link: article.link,
+          publishedAt: article.providerPublishTime,
+          sentiment: sentiment.analyze(article.title)
+      }));
+
+      res.json({
+          success: true,
+          data: {
+              quote,
+              technicalAnalysis,
+              news: newsWithSentiment,
+              historical: historical.map(h => ({
+                  date: h.date,
+                  close: h.close,
+                  volume: h.volume
+              }))
+          }
+      });
+
+  } catch (error) {
+      res.status(500).json({
+          success: false,
+          message: error.message
+      });
+  }
+});
 
 // Finance API Route
 app.get('/api/finance', async (req, res) => {
